@@ -1,7 +1,7 @@
 int victoire(void)
    {int i, j;
     int k = 0;  // Compteur de pions adverses
-    int peut_bouger = 0;  // 0 = ne peut pas bouger, 1 = peut bouger
+    int peut_bouger = v_deplacement(tour);  // 0 = ne peut pas bouger, 1 = peut bouger
     // Compter les pions adverses
     if (tour == 1) {
         // C'est au tour du joueur 1, compter les pions du joueur 1
@@ -33,21 +33,21 @@ int victoire(void)
             return 1;
         } else {
             printf("Victoire du Joueur 1 !\n");
-            return 2;
+            return 1;
         }
     }
   // Vérifier si l'adversaire peut bouger
     if (tour == 1) {
+        // Vérifier si le joueur 1 peut bouger
+       if (peut_bouger == 0) {
+            printf("Victoire du Joueur 2 ! Joueur 1 bloqué\n");
+            return 1;
+        }
+    } else {
         // Vérifier si le joueur 2 peut bouger
        if (peut_bouger == 0) {
             printf("Victoire du Joueur 1 ! Joueur 2 bloqué\n");
             return 1;
-        }
-    } else {
-        // Vérifier si le joueur 1 peut bouger
-       if (peut_bouger == 0) {
-            printf("Victoire du Joueur 2 ! Joueur 1 bloqué\n");
-            return 2;
         }
     }
  return 0;  // Pas de victoire
