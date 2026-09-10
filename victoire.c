@@ -1,53 +1,78 @@
 int victoire(void)
-   {int i, j;
-    int k = 0;  // Compteur de pions adverses
-    int peut_bouger = v_deplacement(tour);  // 0 = ne peut pas bouger, 1 = peut bouger
-    // Compter les pions adverses
-    if (tour == 1) {
-        // C'est au tour du joueur 1, compter les pions du joueur 1
-        for (i = 0; i < 7; i++)
-            {for (j = 0; j < 7; j++)
-               {
-                 if (A[i][j].joueur == 1)
-                   {
-                    k++;
-                }
-            }
-        }
-    } else {
-        // C'est au tour du joueur 2, compter les pions du joueur 2
-        for (i = 0; i < 7; i++) {
-            for (j = 0; j < 7; j++) {
-                if (A[i][j].joueur == 2) {
-                    k++;
-                }
-            }
-        }
-        return k;
+{
+    int i, j, k = 0;
+    int adversaire = (tour == 1) ? 2 : 1;
+
+    // Compter les pions de l'adversaire
+    for (i = 0; i < 7; i++)
+        for (j = 0; j < 7; j++)
+            if (A[i][j].joueur == adversaire) k++;
+
+    // Cas 1 : l'adversaire n'a plus de pions
+    // Cas 2 : l'adversaire ne peut pas bouger
+    if (k == 0 || !peut_bouger(adversaire))
+    {
+        gagnant = tour;
+        return 1;
     }
 
-    // Si k == 0, il n'y a plus de pions adverses → victoire
-    if (k = 0) {
-        if (tour == 1) {
-            printf("Victoire du Joueur 2 !\n");
-            return 1;
-        } else {
-            printf("Victoire du Joueur 1 !\n");
-            return 1;
+    return 0;
+}
+
+int peut_bouger(int joueur)
+{
+    int i, j;
+    int adv = (joueur == 1) ? 2 : 1;
+    int dir = (joueur == 1) ? 1 : -1;
+    int alez = -dir;
+
+    for (i = 0; i < 7; i++)
+    {
+        for (j = 0; j < 7; j++)
+        {
+            if (A[i][j].joueur == joueur)
+            {
+                // Déplacement simple vers l'avant
+                if (i + dir >= 0 && i + dir <= 6)
+                {
+                    if (j - 1 >= 0 && A[i+dir][j-1].joueur == 0) return 1;
+                    if (j + 1 <= 6 && A[i+dir][j+1].joueur == 0) return 1;
+                }
+
+                // Prise vers l'avant
+                if (i + 2*dir >= 0 && i + 2*dir <= 6)
+                {
+                    if (j - 2 >= 0 &&
+                        A[i+dir][j-1].joueur == adv &&
+                        A[i+2*dir][j-2].joueur == 0) return 1;
+
+                    if (j + 2 <= 6 &&
+                        A[i+dir][j+1].joueur == adv &&
+                        A[i+2*dir][j+2].joueur == 0) return 1;
+                }
+
+                // Officier : déplacement arrière
+                if (A[i][j].officier == 1)
+                {
+                    if (i + alez >= 0 && i + alez <= 6)
+                    {
+                        if (j - 1 >= 0 && A[i+alez][j-1].joueur == 0) return 1;
+                        if (j + 1 <= 6 && A[i+alez][j+1].joueur == 0) return 1;
+                    }
+
+                    if (i + 2*alez >= 0 && i + 2*alez <= 6)
+                    {
+                        if (j - 2 >= 0 &&
+                            A[i+alez][j-1].joueur == adv &&
+                            A[i+2*alez][j-2].joueur == 0) return 1;
+
+                        if (j + 2 <= 6 &&
+                            A[i+alez][j+1].joueur == adv &&
+                            A[i+2*alez][j+2].joueur == 0) return 1;
+                    }
+                }
+            }
         }
     }
-  // Vérifier si l'adversaire peut bouger
-    if (tour == 1) {
-        // Vérifier si le joueur 1 peut bouger
-       if (peut_bouger == 0) {
-            printf("Victoire du Joueur 2 ! Joueur 1 bloqué\n");
-            return 1;
-        }
-    } else {
-        // Vérifier si le joueur 2 peut bouger
-       if (peut_bouger == 0) {
-            printf("Victoire du Joueur 1 ! Joueur 2 bloqué\n");
-            return 1;
-        }
-    }
- return 0;  // Pas de victoire
+    return 0;
+}
